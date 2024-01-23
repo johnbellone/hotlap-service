@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 use clap::Parser;
+use pb::{
+    hotlap_service_server::{HotlapService, HotlapServiceServer},
+    AuthRequest, AuthResponse, DatumRequest, DatumResponse,
+};
 use std::{error::Error, io::ErrorKind, pin::Pin};
 use tokio::sync::mpsc;
-use tonic::{metadata::MetadataValue, transport::Server, Request, Response, Status, Streaming};
 use tokio_stream::{wrappers::ReceiverStream, Stream, StreamExt};
-use pb::{AuthRequest, AuthResponse, DatumRequest, DatumResponse, hotlap_service_server::{HotlapService, HotlapServiceServer}};
+use tonic::{metadata::MetadataValue, transport::Server, Request, Response, Status, Streaming};
 
 pub mod pb {
     tonic::include_proto!("hotlap_service");
@@ -103,7 +106,7 @@ impl HotlapService for LocalHotlapServer {
     #[tracing::instrument]
     async fn authenticate(&self, _: Request<AuthRequest>) -> ServerResult<AuthResponse> {
         tracing::debug!("HotlapService/authenticate");
-        Ok(Response::new(AuthResponse { }))
+        Ok(Response::new(AuthResponse {}))
     }
 
     type RecordStream = ResponseStream;
@@ -149,8 +152,6 @@ impl HotlapService for LocalHotlapServer {
         // echo just write the same data that was received
         let out_stream = ReceiverStream::new(rx);
 
-        Ok(Response::new(
-            Box::pin(out_stream) as ResponseStream
-        ))
+        Ok(Response::new(Box::pin(out_stream) as ResponseStream))
     }
 }

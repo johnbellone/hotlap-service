@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT OR Apache-2.0
+// SPDX-License-Identifier: Apache-2.0
 use clap::Parser;
 use tonic::{metadata::MetadataValue, transport::Channel, Request};
 use pb::{DatumRequest, hotlap_service_client::HotlapServiceClient};

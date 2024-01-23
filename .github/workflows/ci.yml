@@ -94,7 +94,7 @@ jobs:
           tool: protoc@${{ env.PROTOC_VERSION }}
       - uses: Swatinem/rust-cache@v2
       - run: cargo check --workspace --all-targets --all-features
-      - run: cargo doc --no-deps --package tonic --package tonic-build --package tonic-health --package tonic-reflection --package tonic-types --package tonic-web
+      - run: cargo doc --no-deps --package hotlap-service-client --package hotlap-service-server
         env:
           RUSTDOCFLAGS: "-D warnings"
 

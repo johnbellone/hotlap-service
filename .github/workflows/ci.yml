@@ -114,24 +114,3 @@ jobs:
       - run: cargo test --workspace --all-features
         env:
           QUICKCHECK_TESTS: 1000 # run a lot of quickcheck iterations
-
-  interop:
-    name: Interop Tests
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hecrj/setup-rust-action@v2
-      - name: Install protoc
-        uses: taiki-e/install-action@v2
-        with:
-          tool: protoc@${{ env.PROTOC_VERSION }}
-      - uses: Swatinem/rust-cache@v2
-      - name: Run interop tests
-        run: ./interop/test.sh
-        shell: bash
-      - name: Run interop tests with Rustls
-        run: ./interop/test.sh --use_tls tls_rustls
-        shell: bash

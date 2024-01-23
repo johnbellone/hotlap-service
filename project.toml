@@ -1,0 +1,17 @@
+[_]
+schema-version = "0.2"
+id = "dev.jbellone.hotlap-service"
+name = "Hotlap Service"
+authors = ["John Bellone <me@jbellone.dev>"]
+source-url = "https://github.com/johnbellone/hotlap-service"
+documentation-url = "https://github.com/johnbellone/hotlap-service/blob/main/README.md"
+version = "0.1.0"
+
+[[io.buildpacks.group]]
+id = "docker.io/paketocommunity/rust"
+exclude = [
+    "README.md",
+    ".editorconfig",
+    ".gitattributes",
+    ".gitignore"
+]

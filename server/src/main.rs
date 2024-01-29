@@ -2,7 +2,7 @@
 use clap::Parser;
 use pb::{
     hotlap_service_server::{HotlapService, HotlapServiceServer},
-    AuthRequest, AuthResponse, DatumRequest, DatumResponse,
+    DatumRequest, DatumResponse,
 };
 use std::{error::Error, io::ErrorKind, pin::Pin};
 use tokio::sync::mpsc;
@@ -53,7 +53,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let server = LocalHotlapServer::default();
-    let service = HotlapServiceServer::with_interceptor(server, intercept);
+    let service = HotlapServiceServer::with_interceptor(server, authorize);
 
     Server::builder()
         .trace_fn(|_| tracing::info_span!("hotlap_service_server"))
@@ -66,7 +66,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 // TODO: Implement a proper JWT authentication check here.
-fn intercept(request: Request<()>) -> InterceptResult<()> {
+fn authorize(request: Request<()>) -> InterceptResult<()> {
     let token: MetadataValue<_> = "Bearer deadbeef".parse().unwrap();
 
     match request.metadata().get("authorization") {
@@ -103,12 +103,6 @@ pub struct LocalHotlapServer {}
 
 #[tonic::async_trait]
 impl HotlapService for LocalHotlapServer {
-    #[tracing::instrument]
-    async fn authenticate(&self, _: Request<AuthRequest>) -> ServerResult<AuthResponse> {
-        tracing::debug!("HotlapService/authenticate");
-        Ok(Response::new(AuthResponse {}))
-    }
-
     type RecordStream = ResponseStream;
 
     #[tracing::instrument]

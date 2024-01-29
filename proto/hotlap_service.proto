@@ -4,16 +4,7 @@ syntax = "proto3";
 package hotlap_service;
 
 service HotlapService {
-    rpc Authenticate(AuthRequest) returns (AuthResponse) {}
     rpc Record(stream DatumRequest) returns (stream DatumResponse) {}
-}
-
-message AuthRequest {
-
-}
-
-message AuthResponse {
-
 }
 
 message DatumRequest {

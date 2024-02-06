@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 use clap::Parser;
+use hotlap_service_server::TokenInterceptor;
 use pb::{
     hotlap_service_server::{HotlapService, HotlapServiceServer},
     DatumRequest, DatumResponse,
@@ -7,7 +8,7 @@ use pb::{
 use std::{error::Error, io::ErrorKind, pin::Pin};
 use tokio::sync::mpsc;
 use tokio_stream::{wrappers::ReceiverStream, Stream, StreamExt};
-use tonic::{metadata::MetadataValue, transport::Server, Request, Response, Status, Streaming};
+use tonic::{transport::Server, Request, Response, Status, Streaming};
 
 pub mod pb {
     tonic::include_proto!("hotlap_service");
@@ -17,7 +18,6 @@ pub mod pb {
 
 type ResponseStream = Pin<Box<dyn Stream<Item = Result<DatumResponse, Status>> + Send>>;
 type ServerResult<T> = Result<Response<T>, Status>;
-type InterceptResult<T> = Result<Request<T>, Status>;
 
 #[derive(Parser, Debug)]
 #[command(name = "hotlap-service-server")]
@@ -53,7 +53,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let server = LocalHotlapServer::default();
-    let service = HotlapServiceServer::with_interceptor(server, authorize);
+    let interceptor = TokenInterceptor::default();
+    let service = HotlapServiceServer::with_interceptor(server, interceptor);
 
     Server::builder()
         .trace_fn(|_| tracing::info_span!("hotlap_service_server"))
@@ -63,16 +64,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .await?;
 
     Ok(())
-}
-
-// TODO: Implement a proper JWT authentication check here.
-fn authorize(request: Request<()>) -> InterceptResult<()> {
-    let token: MetadataValue<_> = "Bearer deadbeef".parse().unwrap();
-
-    match request.metadata().get("authorization") {
-        Some(t) if token == t => Ok(request),
-        _ => Err(Status::unauthenticated("Invalid token")),
-    }
 }
 
 fn match_for_io_error(err_status: &Status) -> Option<&std::io::Error> {

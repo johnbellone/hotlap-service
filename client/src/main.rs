@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 use clap::Parser;
+use hotlap_service_client::TokenInterceptor;
 use pb::{hotlap_service_client::HotlapServiceClient, DatumRequest};
-use tonic::{metadata::MetadataValue, transport::Channel, Request};
+use tonic::transport::Channel;
+use tracing::debug;
 
 pub mod pb {
     tonic::include_proto!("hotlap_service");
@@ -32,7 +34,7 @@ fn datum_request() -> DatumRequest {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::DEBUG)
+        .with_max_level(tracing::Level::INFO)
         .init();
 
     let args = Args::parse();
@@ -45,15 +47,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     // TODO: Implement JWT authentication/authorization here.
-    let token: MetadataValue<_> = "Bearer deadbeef".parse()?;
-    let mut client = HotlapServiceClient::with_interceptor(channel, move |mut req: Request<()>| {
-        req.metadata_mut().insert("authorization", token.clone());
-        Ok(req)
-    });
+    let interceptor = TokenInterceptor::default();
+    let mut client = HotlapServiceClient::with_interceptor(channel, interceptor);
 
-    let requests = vec![datum_request(), datum_request(), datum_request()];
+    // TODO: https://github.com/duckdb/duckdb-rs/blob/main/examples/appender.rs
 
-    let _ = client.record(tokio_stream::iter(requests)).await?;
+    let req = vec![datum_request(), datum_request(), datum_request()];
+    debug!("req: {:?}", req);
+
+    let res = client.record(tokio_stream::iter(req)).await?;
+    tracing::debug!("res: {:?}", res);
 
     Ok(())
 }

@@ -993,6 +993,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "hotlap-telemetry"
+version = "0.1.0"
+dependencies = [
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "http"
 version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"

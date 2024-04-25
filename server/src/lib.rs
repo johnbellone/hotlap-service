@@ -7,6 +7,7 @@ use tracing::debug;
 use uuid::Uuid;
 
 type InterceptResult<T> = Result<Request<T>, Status>;
+type ServerResult<T> = Result<Response<T>, Status>;
 
 #[derive(Clone, Debug, Default)]
 pub struct TokenInterceptor;

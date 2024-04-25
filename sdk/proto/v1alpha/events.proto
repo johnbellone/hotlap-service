@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: Apache-2.0
+syntax = "proto3";
+package hotlap.v1alpha;
+
+service EventService {
+    rpc Read(EventRequest) returns (EventResponse) {}
+}
+
+message EventRequest {
+    oneof params {
+        string id = 1;
+    }
+}
+
+message EventResponse {
+    repeated Event events = 1;
+}
+
+message Event {
+    string id = 1;
+}

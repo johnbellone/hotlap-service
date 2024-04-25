@@ -1,0 +1,22 @@
+// SPDX-License-Identifier: Apache-2.0
+syntax = "proto3";
+package hotlap.v1alpha;
+
+service SessionService {
+    rpc Read(SessionRequest) returns (SessionResponse) {}
+}
+
+message SessionRequest {
+    oneof params {
+        string id = 1;
+        string name = 2;
+    }
+}
+
+message SessionResponse {
+    repeated Session sessions = 1;
+}
+
+message Session {
+    string id = 1;
+}

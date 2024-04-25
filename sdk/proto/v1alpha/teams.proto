@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: Apache-2.0
+syntax = "proto3";
+package hotlap.v1alpha;
+
+service TeamService {
+    rpc Read(TeamRequest) returns (TeamResponse) {}
+}
+
+message TeamRequest {
+    oneof params {
+        string id = 1;
+        string name = 2;
+    }
+}
+
+message TeamResponse {
+    repeated Team teams = 1;
+}
+
+message Team {
+    string id = 1;
+    string name = 2;
+}

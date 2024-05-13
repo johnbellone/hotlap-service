@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 use clap::Parser;
 use hotlap_service_client::TokenInterceptor;
-use pb::{hotlap_service_client::HotlapServiceClient, DatumRequest};
+use hotlap_service_sdk::pb::{driver_service_client::DriverServiceClient, DriverRequest};
 use tonic::transport::Channel;
 use tracing::debug;
-
-pub mod pb {
-    tonic::include_proto!("hotlap_service");
-}
 
 #[derive(Parser, Debug)]
 #[command(name = "hotlap-service-client")]
@@ -23,12 +19,6 @@ struct Args {
 
     #[arg(long, default_value_t = false)]
     debug: bool,
-}
-
-fn datum_request() -> DatumRequest {
-    return DatumRequest {
-        uuid: uuid::Uuid::now_v7().to_string(),
-    };
 }
 
 #[tokio::main]
@@ -48,14 +38,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // TODO: Implement JWT authentication/authorization here.
     let interceptor = TokenInterceptor::default();
-    let mut client = HotlapServiceClient::with_interceptor(channel, interceptor);
+    let mut client = DriverServiceClient::with_interceptor(channel, interceptor);
 
     // TODO: https://github.com/duckdb/duckdb-rs/blob/main/examples/appender.rs
 
-    let req = vec![datum_request(), datum_request(), datum_request()];
+    let req = DriverRequest::default();
     debug!("req: {:?}", req);
 
-    let res = client.record(tokio_stream::iter(req)).await?;
+    let res = client.read(req).await?;
     tracing::debug!("res: {:?}", res);
 
     Ok(())

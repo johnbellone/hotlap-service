@@ -17,6 +17,22 @@ message SessionResponse {
     repeated Session sessions = 1;
 }
 
+enum SessionType {
+    option allow_alias = true;
+    SESSION_TYPE_UNSPECIFIED = 0;
+    SESSION_TYPE_UNKNOWN = 0;
+    SESSION_TYPE_PRACTICE = 1;
+    SESSION_TYPE_FP = 1;
+    SESSION_TYPE_QUALIFY = 2;
+    SESSION_TYPE_RACE = 3;
+    SESSION_TYPE_HOTLAP = 4;
+}
+
 message Session {
     string id = 1;
+    SessionType type = 2;
+    string name = 3;
+    int32 index = 4;
+    string track = 5;
+    string simulator = 6;
 }

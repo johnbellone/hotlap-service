@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: Apache-2.0
+syntax = "proto3";
+package hotlap.v1alpha;
+
+service SimulatorService {
+    rpc Read(SimulatorRequest) returns (SimulatorResponse) {}
+}
+
+message SimulatorRequest {
+    oneof params {
+        string id = 1;
+        string name = 2;
+    }
+}
+
+message SimulatorResponse {
+    repeated Simulator simulators = 1;
+}
+
+message Simulator {
+    string id = 1;
+    string name = 2;
+    string version = 3;
+}

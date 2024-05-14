@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 use clap::Parser;
-use hotlap_service_client::TokenInterceptor;
-use hotlap_service_sdk::pb::{driver_service_client::DriverServiceClient, DriverRequest};
+use hotlap_service_client::TokenInjector;
+use hotlap_service_sdk::pb::{simulator_service_client::SimulatorServiceClient, SimulatorRequest};
 use tonic::transport::Channel;
 use tracing::debug;
 
@@ -37,16 +37,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     // TODO: Implement JWT authentication/authorization here.
-    let interceptor = TokenInterceptor::default();
-    let mut client = DriverServiceClient::with_interceptor(channel, interceptor);
+    let interceptor = TokenInjector::default();
+    let mut client = SimulatorServiceClient::with_interceptor(channel, interceptor);
 
-    // TODO: https://github.com/duckdb/duckdb-rs/blob/main/examples/appender.rs
-
-    let req = DriverRequest::default();
+    let req = SimulatorRequest::default();
     debug!("req: {:?}", req);
 
     let res = client.read(req).await?;
-    tracing::debug!("res: {:?}", res);
+    debug!("res: {:?}", res.into_inner());
 
     Ok(())
 }

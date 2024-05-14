@@ -9,9 +9,9 @@ use tracing::debug;
 type InterceptResult<T> = Result<Request<T>, Status>;
 
 #[derive(Clone, Debug, Default)]
-pub struct TokenInterceptor;
+pub struct TokenInjector;
 
-impl tonic::service::Interceptor for TokenInterceptor {
+impl tonic::service::Interceptor for TokenInjector {
     #[tracing::instrument]
     fn call(&mut self, mut req: Request<()>) -> InterceptResult<()> {
         if !req.metadata().contains_key("authorization") {

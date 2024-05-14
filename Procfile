@@ -1,1 +1,1 @@
-srv: ./target/release/hotlap-service-server
+srv: ./target/release/hotlap-service

@@ -1,2 +1,0 @@
-DROP TABLE IF EXISTS simulators;
-DROP EXTENSION citext;

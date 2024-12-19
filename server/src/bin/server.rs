@@ -1,22 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use clap::Parser;
+use dotenvy::dotenv;
 use hotlap_service_sdk::pb::{
     circuit_service_server::CircuitServiceServer, driver_service_server::DriverServiceServer,
     event_service_server::EventServiceServer, session_service_server::SessionServiceServer,
     simulator_service_server::SimulatorServiceServer, team_service_server::TeamServiceServer,
 };
-use hotlap_service_server::service::{
-    circuit::CircuitServer,
-    driver::DriverServer,
-    event::EventServer,
-    interceptor::{TokenInterceptor, TraceInterceptor},
-    session::SessionServer,
-    simulator::SimulatorServer,
-    team::TeamServer,
+use hotlap_service_server::{
+    circuit::CircuitServer, driver::DriverServer, event::EventServer, session::SessionServer,
+    simulator::SimulatorServer, team::TeamServer, TokenInterceptor, TraceInterceptor,
 };
-
-use clap::Parser;
-use dotenvy::dotenv;
 use std::error::Error;
 use std::time::Duration;
 use tonic::transport::Server;

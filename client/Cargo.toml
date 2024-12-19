@@ -8,8 +8,6 @@ authors = ["John Bellone <me@jbellone.dev>"]
 repository = "https://github.com/johnbellone/hotlap-service/client"
 publish = false
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 clap = { version = "4.4.18", features = ["derive", "cargo", "env", "string"] }
 dotenvy = "0.15"

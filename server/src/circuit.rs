@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::service::ServerResult;
+use crate::ServerResult;
 use hotlap_service_sdk::pb::{
     circuit_service_server::CircuitService, CircuitRequest, CircuitResponse,
 };
